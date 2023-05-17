@@ -1,0 +1,92 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+           {{#if cartpro}}
+                <table class="table" style="text-align: center;">
+                    <thead>
+                        <tr>
+                            <th scope="col">No.</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Discription</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each cartpro}}
+                
+                
+                        <tr>
+                            <td>{{@index}}</td>
+                
+                
+                            <td>{{this.pro.Name}}</td>
+                            <td>{{this.pro.Discription}}</td>
+                            <td>{{this.pro.Price}}</td>
+                
+                            <td><img src="/admin_image/{{this.pro._id}}.jpg" style="width: 200px; height: 200px;" alt="">
+                            </td>
+                
+                            <td>
+                                <button class="mt-5 m-2" style="border-radius: 20px;"
+                                    onclick="change('{{this._id}}','{{this.pro._id}}','{{../user._id}}',1)">+</button>
+                
+                
+                
+                
+                                <span id="{{this.pro._id}}">{{this.qut}}</span>
+                
+                                <button class="" style="border-radius: 20px;"
+                                    onclick="change('{{this._id}}','{{this.pro._id}}','{{../user._id}}',-1)">-</button>
+                            </td>
+                        </tr>
+                        {{/each}}
+                
+                    </tbody>
+                </table>
+           {{else}}
+                <h1>Nothing Selectedd</h1>
+           {{/if}}
+            <hr>
+            <div class="float-right m-5">
+                <h3>Totel ₹ : <span id="total">{{total}}</span>/-</h3>
+                <a href="/placeorder" class="btn btn-success" style="width: 100%;">Place Order</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var change = (cartId, proId, userId, qut) => {
+        // alert(userId)
+        var q = parseInt(document.getElementById(proId).innerHTML)
+        var qut = parseInt(qut)
+        $.ajax({
+            url: '/changequt',
+            data:
+            {
+                cart: cartId,
+                pro: proId,
+                cut: qut,
+                quantity: q,
+                userid: userId
+            },
+            method: 'post',
+            success: (response) => {
+                if (response.removepro) {
+                    alert("Your product is remove from the cart")
+                    location.reload()
+                }
+                else {
+                    var c = q + qut
+                    document.getElementById(proId).innerHTML = q + qut
+                    document.getElementById('total').innerHTML = response.total
+
+                }
+            }
+        })
+    }
+
+</script>
